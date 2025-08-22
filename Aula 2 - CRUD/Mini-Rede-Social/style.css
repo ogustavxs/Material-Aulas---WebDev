@@ -79,10 +79,30 @@ li {
 }
 #postList{
    text-align: center;
+   display: flex;
+   flex-direction: column;
+   gap: 40px;
 }
 
 .card-post{
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+
+.Card h2 {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.Card h5, .Card h6{
+    margin: 18px ;
+    font-size: 15px;
+    font-weight: 300;
+    font-style: italic;
+}
+
+.Card img {
+    width: 300px;
 }
