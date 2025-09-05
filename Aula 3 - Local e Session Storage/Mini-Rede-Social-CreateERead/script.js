@@ -19,55 +19,119 @@ let posts = [
     }
 ];
 
-
-// Inicialização
 window.onload = function() {
-    displayPosts();
+    loadPosts()
+    showPosts()
+    document.querySelector("#postForm").addEventListener("submit", addPost)
+    document.querySelector('#postList').addEventListener("click", handleClick)
+}
+let editing = false
+function handleClick(e) {
 
-    document.getElementById('postForm').addEventListener('submit', addPost); 
-};
+    const action = e.target.dataset.action
+    const index = e.target.dataset.index
 
-// Função para exibir os posts
-function displayPosts() {
-    const postList = document.getElementById('postList');
-    postList.innerHTML = '';
-
-    posts.forEach(pegaPost => {
-            const postElement = document.createElement('div');
-            postElement.classList.add('card-post');
-  
-            postElement.innerHTML = `
-                <p>${pegaPost.text}</p>
-                ${pegaPost.image ? `<img src="${pegaPost.image}" alt="Imagem do post" style="max-width:150px;">` : ""}
-                <p><em>Categoria: ${pegaPost.category}</em></p>
-                <p><em>Data e Hora: ${pegaPost.date}</em></p>
-                <button><i class="fa-solid fa-pen-to-square"></i> Editar</button>
-                <button><i class="fa-solid fa-eraser"></i> Apagar</button>
-                <hr style="margin:30px;">`;
-               
-            postList.append(postElement);
-        });
+    if (action === "edit") {
+        if (!editing) {editPost(index, e)}
+        
+    } else if (action === "delete") {
+        deletePost(index)
+    }
 }
 
-// Função para adicionar um novo post
-function addPost(event) {
-    event.preventDefault();
-    
-    const postText = document.getElementById('postText').value;
-    const postCategory = document.getElementById('postCategory').value;
-    const postImage = document.getElementById('postImage').value
-    const postDate = new Date().toLocaleString(); 
+//CREATE
+function addPost(e){
+    e.preventDefault()
+    const postText = document.querySelector("#postText")
+    const postCategory = document.querySelector("#postCategory")
+    const postImage = document.querySelector("#postImage")
 
-    const post = { 
-        text: postText, 
-        category: postCategory, 
-        image: postImage, 
-        date: postDate 
-    };
+    const post = {
+        text: postText.value,
+        category: postCategory.value,
+        image: postImage.value,
+        date: new Date().toLocaleString()
+    }
     
-    posts.unshift(post);
+    if (postText.value == "" && postImage.value == "") {
+        if (postCategory.value == "") {
+            alert("A categoria não pode estar vazia")
+            return
+        }
+        alert("Seu post esta vazio")
+        return
+    }
+
+    posts.unshift(post)
+    savePosts()
+    postText.value = ""
+    postCategory.value = ""
+    postImage.value = ""
+    showPosts()
+}
+
+//READ
+function showPosts(){
+    const postList = document.querySelector("#postList")
+    postList.innerHTML = ""
+
+    posts.forEach((item, index) => {
+        const text = item.text ? item.text : "Nada"
+        const category = item.category ? item.category : "Padrão"
+        const image = item.image ? item.image : ""
+        const date = item.date ? item.date : ""
+        let post = document.createElement('section')
+        post.classList.add("Card")
+        post.innerHTML = `<h2>${text}</h2>
+        <img src="${image}"/>
+        <h5>Categoria: ${category}</h5>
+        <h6>Data e Hora: ${date}</h6>
+        <button data-action="edit" data-index="${index}"><i class="fa-solid fa-edit" style="margin-right: 10px;"></i>Editar</button>
+        <button data-action="delete" data-index="${index}"><i class="fa-solid fa-remove" style="margin-right: 10px;"></i>Apagar</button>`
+        postList.appendChild(post)
+    })
+}
+
+//UPDATE
+function editPost(i, ev){
+    editing = !editing
+    const card = ev.target.parentNode
+    const a = document.createElement("div")
+    a.innerHTML = `<input type='text' id='input' value='${posts[i].text}'><br><button id="send">Editar</button>`
+    card.appendChild(a)
+    const inputel = document.querySelector("#input")
+    const sendbutton = document.querySelector("#send")
+    sendbutton.addEventListener('click', ()=>{posts[i].text = inputel.value
+        showPosts()
+        editing = !editing
+        savePosts()
+    })
     
-    document.getElementById('postForm').reset();
     
-    displayPosts();
+    //const novoTexto = prompt("Edite o conteudo do post", posts[i].text)
+    
+    //posts[i].text = novoTexto
+    
+    
+}
+
+//DELETE
+function deletePost(i){
+    const confirmar = prompt("Deseja realmente deletar o post? (Y/N)")
+    if (confirmar){
+        posts = posts.filter((post, index)=>index!=i)
+        savePosts()
+    }
+    
+    showPosts()
+}
+
+// LOAD
+function loadPosts() {
+
+}
+
+// SAVE
+function savePosts() {
+
 }
