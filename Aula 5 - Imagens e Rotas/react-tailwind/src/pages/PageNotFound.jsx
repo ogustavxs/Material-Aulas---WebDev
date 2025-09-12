@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function PageNotFound() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -7,10 +9,10 @@ export default function PageNotFound() {
         <p className="text-gray-700 mb-4">
           Desculpe, a página que você está procurando não existe.
         </p>
-        <a href="" className="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
+        <Link to="/" className="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
         >
           Voltar para Home
-        </a>
+        </Link>
       </div>
     </div>
   );
